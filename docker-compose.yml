@@ -17,8 +17,7 @@ services:
       - gym-network
 
   backend:
-    # Replace with your actual backend image
-    image: your-backend-image:latest
+    image: backend-image:latest
     ports:
       - "8080:8080"
     networks:
