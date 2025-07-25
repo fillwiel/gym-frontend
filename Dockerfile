@@ -11,6 +11,7 @@ RUN npm ci
 # Copy source files
 COPY . .
 COPY .env.local .env
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Build the app (requires vite, included in devDeps)
 RUN npm run build

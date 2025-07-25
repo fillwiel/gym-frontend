@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SignUpRequest, UserTask } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://gym-backend:8080';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 const AUTH_TOKEN = import.meta.env.VITE_AUTH_TOKEN || '';
 const MEMBER_ID = import.meta.env.VITE_MEMBER_ID || '';
 
