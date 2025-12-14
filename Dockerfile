@@ -1,40 +1,30 @@
 # ---------- Build Stage ----------
-FROM node:18-alpine AS builder
-
-# Set working directory
+FROM node:25-alpine AS build
 WORKDIR /app
 
-# Install dependencies separately for better caching
+# Copy package files
 COPY package.json package-lock.json ./
+# Install dependencies
 RUN npm ci
-
-# Copy source files
+# Copy all source files
 COPY . .
-COPY .env.local .env
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Build the app (requires vite, included in devDeps)
+# Build the application
 RUN npm run build
 
-
-# ---------- Production Stage ----------
+# Serve with nginx
 FROM nginx:alpine
+# Copy custom nginx config
 
-# Remove default nginx config
-RUN rm /etc/nginx/conf.d/default.conf
+# Install bash for env injection script
+RUN apk add --no-cache bash
 
-# Add your custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy built app from build stage
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy built assets from the builder
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Optional: Copy specific PWA-related files
-COPY --from=builder /app/public/manifest.json /usr/share/nginx/html/
-COPY --from=builder /app/public/sw.js /usr/share/nginx/html/
+# Copy env injection script
+COPY env-inject.sh /docker-entrypoint.d/40-env-inject.sh
+RUN chmod +x /docker-entrypoint.d/40-env-inject.sh
 
 # nginx listens on port 80 by default
 EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]

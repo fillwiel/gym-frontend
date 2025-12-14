@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gym-frontend
+  namespace: gym
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: gym-frontend
+  template:
+    metadata:
+      labels:
+        app: gym-frontend
+    spec:
+      containers:
+        - name: gym-frontend
+          image: gym-frontend:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: gym-frontend-config
+            - secretRef:
+                name: gym-frontend-secret
+
+      resources:
+        requests:
+          memory: "64Mi"
+          cpu: "50m"
+        limits:
+          memory: "128Mi"
+          cpu: "100m"

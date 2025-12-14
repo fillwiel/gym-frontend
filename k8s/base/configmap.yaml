@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gym-frontend-config
+  namespace: gym
+data:
+  VITE_API_BASE_URL: "/api"

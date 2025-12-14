@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gym-frontend-service
+  namespace: gym
+  labels:
+    app: gym-frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: gym-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP

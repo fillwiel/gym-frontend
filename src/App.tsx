@@ -11,6 +11,8 @@ import { GymClass, UserTask } from './types';
 import {Toaster} from "react-hot-toast";
 
 function App() {
+  const FADE_DURATION = 100; // ms - keep in sync with Tailwind duration if changed
+
   const [classes, setClasses] = useState<GymClass[]>([]);
   const [userTasks, setUserTasks] = useState<UserTask[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(() => {
@@ -18,6 +20,9 @@ function App() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // declare fading state
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
   // Group classes by date
   const groupedClasses = useMemo(() => {
@@ -45,18 +50,27 @@ function App() {
     return groupedClasses.find(day => day.date === selectedDate)?.classes || [];
   }, [groupedClasses, selectedDate]);
 
-  // Navigation functions for swipe and day selector
+  // change date with fade animation
+  const changeDateWithFade = async (newDate: string) => {
+    if (newDate === selectedDate) return;
+    setIsFadingOut(true);
+    await new Promise(resolve => setTimeout(resolve, FADE_DURATION));
+    setSelectedDate(newDate);
+    setIsFadingOut(false);
+  };
+
+  // Navigation functions for swipe and day selector use the fade helper
   const navigateToNextDay = () => {
     const currentIndex = availableDates.indexOf(selectedDate);
     if (currentIndex < availableDates.length - 1) {
-      setSelectedDate(availableDates[currentIndex + 1]);
+      changeDateWithFade(availableDates[currentIndex + 1]);
     }
   };
 
   const navigateToPreviousDay = () => {
     const currentIndex = availableDates.indexOf(selectedDate);
     if (currentIndex > 0) {
-      setSelectedDate(availableDates[currentIndex - 1]);
+      changeDateWithFade(availableDates[currentIndex - 1]);
     }
   };
 
@@ -64,10 +78,10 @@ function App() {
   const swipeHandlers = useSwipeable({
     onSwipedLeft: navigateToNextDay,
     onSwipedRight: navigateToPreviousDay,
-    trackMouse: true, // Enable mouse dragging for desktop testing
+    trackMouse: true,
     preventScrollOnSwipe: true,
     trackTouch: true,
-    delta: 50, // Minimum distance for swipe to register
+    delta: 50,
   });
 
   const loadData = async () => {
@@ -122,9 +136,10 @@ function App() {
     }
   };
 
-  const isUserSignedUp = (classId: string) => {
-    return userTasks.some(task => task.id === classId);
-  };
+   const isUserSignedUp = (classId: string) => {
+      if (!Array.isArray(userTasks)) return false;
+      return userTasks.some(task => task.id === classId);
+    };
 
   if (isLoading) {
     return (
@@ -154,38 +169,43 @@ function App() {
       {availableDates.length > 0 && (
         <DaySelector
           selectedDate={selectedDate}
-          onDateSelect={setSelectedDate}
+          onDateSelect={changeDateWithFade}
           availableDates={availableDates}
         />
       )}
 
       <main className="px-4 py-6" {...swipeHandlers}>
-        {selectedDayClasses.length === 0 ? (
-          <div className="text-center py-12 select-none">
-            <p className="text-gray-500 dark:text-gray-400 text-lg">
-              No classes available for this day
-            </p>
-            <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
-              Swipe left or right to browse other days
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-4 max-w-4xl mx-auto select-none">
-            {selectedDayClasses.map((gymClass) => (
-              <ClassCard
-                key={`${gymClass.id}-${gymClass.date}`}
-                gymClass={gymClass}
-                isSignedUp={isUserSignedUp(gymClass.id)}
-                onSignUp={handleSignUp}
-              />
-            ))}
-            <div className="text-center py-4">
-              <p className="text-gray-400 dark:text-gray-500 text-sm">
+        <div
+          // fade wrapper: Tailwind transition; uses FADE_DURATION ms above
+          className={`transition-opacity duration-300 ${isFadingOut ? 'opacity-0' : 'opacity-100'}`}
+        >
+          {selectedDayClasses.length === 0 ? (
+            <div className="text-center py-12 select-none">
+              <p className="text-gray-500 dark:text-gray-400 text-lg">
+                No classes available for this day
+              </p>
+              <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
                 Swipe left or right to browse other days
               </p>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="space-y-4 max-w-4xl mx-auto select-none">
+              {selectedDayClasses.map((gymClass) => (
+                <ClassCard
+                  key={`${gymClass.id}-${gymClass.date}`}
+                  gymClass={gymClass}
+                  isSignedUp={isUserSignedUp(gymClass.id)}
+                  onSignUp={handleSignUp}
+                />
+              ))}
+              <div className="text-center py-4">
+                <p className="text-gray-400 dark:text-gray-500 text-sm">
+                  Swipe left or right to browse other days
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );
