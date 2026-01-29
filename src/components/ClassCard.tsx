@@ -45,8 +45,8 @@ export const ClassCard: React.FC<ClassCardProps> = ({
             <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">
-                        {/*TODO za cholere nie moge odczytac issignedup*/}
-                        {gymClass.title} signedup: {isSignedUp}
+                        {/*TODO za nic nie moge odczytac issignedup*/}
+                        {gymClass.title}
                     </h3>
                     <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                         <div className="flex items-center gap-1">
