@@ -11,5 +11,6 @@ patches:
   - path: ingress-patch.yaml
 
 images:
-  - name: your-dockerhub-username/gym-frontend
+  - name: gym-frontend
+    newName: ghcr.io/fillwiel/gym-frontend
     newTag: main
