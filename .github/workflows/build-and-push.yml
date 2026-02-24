@@ -11,6 +11,7 @@ on:
       - 'Dockerfile'
       - 'nginx.conf'
       - 'env-inject.sh'
+      - 'vite.config.js'
       - '.github/workflows/build-and-push.yml'
   workflow_dispatch:  # Allows manual trigger
 
