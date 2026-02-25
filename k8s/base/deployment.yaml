@@ -17,7 +17,6 @@ spec:
       containers:
         - name: gym-frontend
           image: gym-frontend:1.0.0
-          imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 80
