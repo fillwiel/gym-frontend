@@ -6,14 +6,15 @@ metadata:
   annotations:
     managed-by: kustomize
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   rules:
-    - http:
+    - host: PLACEHOLDER
+      http:
         paths:
-          - path: /gym(/|$)(.*)
-            pathType: ImplementationSpecific
+          # Catch-all for frontend (SPA routing)
+          - path: /
+            pathType: Prefix
             backend:
               service:
                 name: gym-frontend-service
