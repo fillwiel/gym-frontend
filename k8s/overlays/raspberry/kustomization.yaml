@@ -8,6 +8,7 @@ resources:
 
 patches:
   - path: configmap-patch.yaml
+#  - path: ingress-patch.yaml
 
 images:
   - name: gym-frontend
