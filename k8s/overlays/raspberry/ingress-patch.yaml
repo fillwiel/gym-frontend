@@ -19,3 +19,12 @@ spec:
                 name: gym-frontend-service
                 port:
                   number: 80
+    - host: ""
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: gym-frontend-service
+                port:
+                  number: 80
