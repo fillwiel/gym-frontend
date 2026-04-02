@@ -30,10 +30,11 @@ spec:
                   number: 80
     - host: ""
       http:
-        path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: gym-backend-service
-            port:
-              number: 8080
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: gym-backend-service
+                port:
+                  number: 8080
