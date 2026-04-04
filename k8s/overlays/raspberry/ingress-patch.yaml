@@ -18,6 +18,13 @@ spec:
                 name: gym-frontend-service
                 port:
                   number: 80
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: gym-backend-service
+                port:
+                  number: 8080
     - host: ""
       http:
         paths:
@@ -28,9 +35,6 @@ spec:
                 name: gym-frontend-service
                 port:
                   number: 80
-    - host: ""
-      http:
-        paths:
           - path: /api
             pathType: Prefix
             backend:

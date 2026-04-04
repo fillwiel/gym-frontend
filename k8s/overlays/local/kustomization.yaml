@@ -9,3 +9,7 @@ resources:
 patches:
   - path: configmap-patch.yaml
   - path: ingress-patch.yaml
+
+images:
+  - name: gym-frontend
+    newTag: 1.0.0

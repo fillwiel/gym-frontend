@@ -5,9 +5,8 @@ metadata:
   namespace: gym
   annotations:
     managed-by: kustomize
-    nginx.ingress.kubernetes.io/enable-cors: "true"
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
     - host: PLACEHOLDER
       http:
